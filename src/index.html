@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>sse demo</title>
+</head>
+<body>
+    <h1>serer-sent events</h1>
+    <div id="div1">pending</div>
+
+    <script>
+        if(window.EventSource){
+            var oDiv = document.getElementById('div1');
+            var evtSource = new EventSource('http://localhost:8080/sse');
+
+            //建立连接时
+            evtSource.onopen = function(){
+                console.log('open');
+            };
+
+            //有数据时
+            evtSource.onmessage = function(event) {
+                //console.log(event.data);
+                oDiv.innerHTML = event.data;
+            };
+
+            //自定义事件
+            evtSource.addEventListener('abc', function(event){
+                oDiv.innerHTML = event.data;
+            }, false);
+
+
+            evtSource.onerror = function(event){
+                console.log('error=--------');
+                console.log(event);
+
+                //关闭连接
+                //evtSource.close();
+            };
+
+        }else{
+            alert('您的浏览器暂不支持此功能，请在高版本chrome中再运行尝鲜')
+        }
+    </script>
+</body>
+</html>
